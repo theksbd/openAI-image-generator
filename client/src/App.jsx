@@ -3,7 +3,7 @@ import "./App.css";
 
 function App() {
   const [prompt, setPrompt] = useState("");
-  const [size, setSize] = useState("small");
+  const [size, setSize] = useState("medium");
   const [spinner, setSpinner] = useState(false);
   const [message, setMessage] = useState("Image will be displayed here");
   const [image, setImage] = useState("");
@@ -29,7 +29,10 @@ function App() {
       },
       body: JSON.stringify({ prompt, size })
     };
-    fetch("/api/generateImage", option)
+    fetch(
+      "https://openai-image-generator-api-evwd.onrender.com/api/generateImage",
+      option
+    )
       .then(response => response.json())
       .then(data => {
         setSpinner(false);

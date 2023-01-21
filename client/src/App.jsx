@@ -1,33 +1,27 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import "./App.css";
+import { ACTION_TYPE, appReducer, INITIAL_STATE } from "./appReducer";
 
 function App() {
-  const [prompt, setPrompt] = useState("");
-  const [size, setSize] = useState("medium");
-  const [spinner, setSpinner] = useState(false);
-  const [message, setMessage] = useState("Image will be displayed here");
-  const [image, setImage] = useState("");
+  const [state, dispatch] = useReducer(appReducer, INITIAL_STATE);
 
   const handleChangePrompt = e => {
-    setPrompt(e.target.value);
+    dispatch({ type: ACTION_TYPE.SET_PROMPT, payload: e.target.value });
   };
 
   const handleChangeSize = e => {
-    setSize(e.target.value);
+    dispatch({ type: ACTION_TYPE.SET_SIZE, payload: e.target.value });
   };
 
   const handleClickSubmit = e => {
     e.preventDefault();
-    setSpinner(true);
-    setPrompt("");
-    setImage("");
-    setMessage("Generating Image...");
+    dispatch({ type: ACTION_TYPE.FETCH_START });
     const option = {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ prompt, size })
+      body: JSON.stringify({ prompt: state.prompt, size: state.size })
     };
     fetch(
       "https://openai-image-generator-api-evwd.onrender.com/api/generateImage",
@@ -35,16 +29,21 @@ function App() {
     )
       .then(response => response.json())
       .then(data => {
-        setSpinner(false);
         if (!data.success) {
-          setMessage(data.errorResponse);
+          dispatch({
+            type: ACTION_TYPE.FETCH_FAILURE,
+            payload: data.errorResponse
+          });
           return;
         }
-        setMessage("");
-        setImage(data.imageURL);
+        dispatch({ type: ACTION_TYPE.FETCH_SUCCESS, payload: data.imageURL });
       })
       .catch(error => {
-        setSpinner(false);
+        dispatch({
+          type: ACTION_TYPE.FETCH_FAILURE,
+          payload:
+            "Something went wrong. It seems to be an internal error from our side. Please come back later!"
+        });
         console.log(error);
       });
   };
@@ -77,7 +76,7 @@ function App() {
                 type="text"
                 id="prompt"
                 placeholder="Enter Text"
-                value={prompt}
+                value={state.prompt}
                 onChange={handleChangePrompt}
               />
             </div>
@@ -101,13 +100,13 @@ function App() {
 
         <section className="image">
           <div className="image-container">
-            <h2 className="msg">{message}</h2>
-            <img src={image} alt="" id="image" />
+            <h2 className="msg">{state.message}</h2>
+            <img src={state.image} alt="" id="image" />
           </div>
         </section>
       </main>
 
-      <div className={spinner ? "spinner show" : "spinner"}></div>
+      <div className={state.spinner ? "spinner show" : "spinner"}></div>
     </div>
   );
 }

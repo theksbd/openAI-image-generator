@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const generateImage = async (req, res) => {
   const { prompt, size } = req.body;
 

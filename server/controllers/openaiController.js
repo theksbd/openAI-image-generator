@@ -1,10 +1,3 @@
-const { Configuration, OpenAIApi } = require("openai");
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
 const generateImage = async (req, res) => {
   const { prompt, size } = req.body;
 
@@ -12,16 +5,31 @@ const generateImage = async (req, res) => {
     size === "small" ? "256x256" : size === "medium" ? "512x512" : "1024x1024";
 
   try {
-    const response = await openai.createImage({
+    const imageConfig = {
       prompt,
       n: 1,
-      size: imageSize,
-    });
+      size: imageSize
+    };
 
-    const imageURL = response.data.data[0].url;
-    res.status(200).json({
+    const options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "X-RapidAPI-Key": "09bbdb2a83msh1adc61b4fb8845cp17e44ejsn1d4b61caf649",
+        "X-RapidAPI-Host": "openai80.p.rapidapi.com"
+      },
+      body: JSON.stringify(imageConfig)
+    };
+
+    const response = await fetch(
+      "https://openai80.p.rapidapi.com/images/generations",
+      options
+    );
+    const data = await response.json();
+
+    return res.status(200).json({
       success: true,
-      imageURL,
+      imageURL: data.data[0].url
     });
   } catch (error) {
     let errorResponse =
@@ -36,11 +44,11 @@ const generateImage = async (req, res) => {
     res.status(400).json({
       success: false,
       message: "The image could not be generated",
-      errorResponse,
+      errorResponse
     });
   }
 };
 
 module.exports = {
-  generateImage,
+  generateImage
 };

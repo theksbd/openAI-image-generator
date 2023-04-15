@@ -15,7 +15,7 @@ const generateImage = async (req, res) => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "X-RapidAPI-Key": "09bbdb2a83msh1adc61b4fb8845cp17e44ejsn1d4b61caf649",
+        "X-RapidAPI-Key": process.env.OPENAI_API_KEY,
         "X-RapidAPI-Host": "openai80.p.rapidapi.com"
       },
       body: JSON.stringify(imageConfig)

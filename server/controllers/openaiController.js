@@ -15,7 +15,6 @@ const generateImage = async (req, res) => {
 
     const options = {
       method: "POST",
-      url: 'https://open-ai21.p.rapidapi.com/texttoimage2',
       headers: {
         'content-type': 'application/json',
         'X-RapidAPI-Key': process.env.OPENAI_API_KEY,

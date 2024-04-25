@@ -21,19 +21,18 @@ const generateImage = async (req, res) => {
         'X-RapidAPI-Key': process.env.OPENAI_API_KEY,
         'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
       },
-      body: JSON.stringify(imageConfig),
-      data: {text: imageConfig.prompt}
+      body: {text: imageConfig.prompt}
     };
 
     const response = await fetch(
       "https://open-ai21.p.rapidapi.com/texttoimage2",
       options
     );
-    const data = await response.json();
+    const data = await response.text();
 
     return res.status(200).json({
       success: true,
-      imageURL: data.data
+      imageURL: data
     });
   } catch (error) {
     let errorResponse =

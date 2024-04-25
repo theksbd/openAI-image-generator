@@ -24,8 +24,6 @@ const generateImage = async (req, res) => {
     	body: JSON.stringify({text: prompt})
     };
 
-    console.log('option:', options);
-
     const response = await fetch(url, options);
     const data = await response.json();
 

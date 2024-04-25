@@ -21,7 +21,7 @@ const generateImage = async (req, res) => {
     		'X-RapidAPI-Key': process.env.OPENAI_API_KEY,
     		'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
     	},
-    	body: {text: imageConfig.prompt}
+    	body: JSON.stringify({text: prompt})
     };
 
     console.log('option:', options);

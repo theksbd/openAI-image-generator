@@ -27,11 +27,11 @@ const generateImage = async (req, res) => {
     console.log('option:', options);
 
     const response = await fetch(url, options);
-    const data = await response.text();
+    const data = await response.json();
 
     return res.status(200).json({
       success: true,
-      imageURL: data
+      imageURL: data.generated_image
     });
   } catch (error) {
     let errorResponse =
